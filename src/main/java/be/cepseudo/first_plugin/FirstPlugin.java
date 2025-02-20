@@ -1,6 +1,7 @@
 package be.cepseudo.first_plugin;
 
 import be.cepseudo.first_plugin.commands.CreateFactionCommand;
+import be.cepseudo.first_plugin.commands.DisbandFactionCommand;
 import be.cepseudo.first_plugin.commands.ShowFactionCommand;
 import be.cepseudo.first_plugin.manager.FactionManager;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -26,6 +27,7 @@ public class FirstPlugin extends JavaPlugin {
         return LiteralArgumentBuilder.<CommandSourceStack>literal("f")
                 .then(new CreateFactionCommand(factionManager).build()) // Ajout de /f create
                 .then(new ShowFactionCommand(factionManager).build())   // Ajout de /f show
+                .then(new DisbandFactionCommand(factionManager).build())
                 .build();
     }
 }

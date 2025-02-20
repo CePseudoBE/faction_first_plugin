@@ -88,4 +88,17 @@ public class FactionManager {
         String factionName = playerFactionMap.get(playerUUID);
         return (factionName != null) ? factions.get(factionName) : null;
     }
+
+    public void deleteFaction(UUID playerUUID) {
+        String factionName = playerFactionMap.get(playerUUID);
+        if (factionName == null) return; // Sécurité si le joueur n'a pas de faction
+
+        Faction faction = factions.remove(factionName);
+        if (faction == null) return; // La faction n'existe pas, rien à faire
+
+        // Supprime tous les membres de la faction de playerFactionMap
+        for (UUID member : faction.getMembers()) {
+            playerFactionMap.remove(member);
+        }
+    }
 }
