@@ -4,7 +4,7 @@ import be.cepseudo.first_plugin.manager.FactionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -13,6 +13,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 
 public class CreateFactionCommand {
     private final FactionManager factionManager;
+    private static final MiniMessage miniMessage = MiniMessage.miniMessage(); // MiniMessage pour le formatage
 
     public CreateFactionCommand(FactionManager factionManager) {
         this.factionManager = factionManager;
@@ -29,7 +30,7 @@ public class CreateFactionCommand {
         CommandSender sender = source.getSender();
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(Component.text("Seuls les joueurs peuvent exécuter cette commande."));
+            sender.sendMessage(miniMessage.deserialize("<red>❌ Seuls les joueurs peuvent exécuter cette commande."));
             return Command.SINGLE_SUCCESS;
         }
 
@@ -38,14 +39,13 @@ public class CreateFactionCommand {
         // Vérifie s'il y a un problème avec la création de faction
         String errorMessage = factionManager.canCreateFaction(factionName, player.getUniqueId());
         if (errorMessage != null) {
-            sender.sendMessage(Component.text(errorMessage));
+            sender.sendMessage(miniMessage.deserialize("<yellow>⚠ " + errorMessage));
             return Command.SINGLE_SUCCESS;
         }
 
         // Création de la faction car tout est valide
         factionManager.createFaction(factionName, player.getUniqueId());
-        sender.sendMessage(Component.text("Faction '" + factionName + "' créée avec succès."));
+        sender.sendMessage(miniMessage.deserialize("<green>✅ Faction <gold>'" + factionName + "'</gold> créée avec succès! 🎉"));
         return Command.SINGLE_SUCCESS;
     }
-
 }
