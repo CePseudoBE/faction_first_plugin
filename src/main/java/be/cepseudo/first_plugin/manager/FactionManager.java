@@ -1,6 +1,9 @@
 package be.cepseudo.first_plugin.manager;
 
 import be.cepseudo.first_plugin.entities.Faction;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -99,6 +102,26 @@ public class FactionManager {
         // Supprime tous les membres de la faction de playerFactionMap
         for (UUID member : faction.getMembers()) {
             playerFactionMap.remove(member);
+        }
+    }
+
+    public void leaveFaction(UUID playerUUID) {
+        String factionName = playerFactionMap.get(playerUUID);
+        if (factionName == null) return;
+        Faction faction = factions.get(factionName);
+        if (faction == null) return;
+        faction.removeMember(playerUUID);
+        playerFactionMap.remove(playerUUID);
+    }
+
+    public void broadcastToFaction(Faction faction, Component message){
+        if (faction == null) return;
+
+        for (UUID memberUUID : faction.getMembers()) {
+            Player player = Bukkit.getPlayer(memberUUID); // Vérifie si le membre est en ligne
+            if (player != null && player.isOnline()) {
+                player.sendMessage(message); // Envoie le message uniquement aux membres connectés
+            }
         }
     }
 }

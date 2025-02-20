@@ -9,15 +9,15 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 import static be.cepseudo.first_plugin.utils.CommandUtils.*;
 
-public class DisbandFactionCommand {
+public class LeaveFactionCommand {
     private final FactionManager factionManager;
 
-    public DisbandFactionCommand(FactionManager factionManager) {
+    public LeaveFactionCommand(FactionManager factionManager) {
         this.factionManager = factionManager;
     }
 
     public LiteralArgumentBuilder<CommandSourceStack> build() {
-        return LiteralArgumentBuilder.<CommandSourceStack>literal("disband")
+        return LiteralArgumentBuilder.<CommandSourceStack>literal("leave")
                 .executes(this::execute);
     }
 
@@ -26,20 +26,21 @@ public class DisbandFactionCommand {
         if (player == null) return Command.SINGLE_SUCCESS;
 
         if (!factionManager.isPlayerInFaction(player.getUniqueId())) {
-            sendMessage(player, "<yellow>Vous n'appartenez à aucune faction.");
+            sendMessage(player, "<yellow>⚠ Vous n'appartenez à aucune faction.");
             return Command.SINGLE_SUCCESS;
         }
 
         Faction faction = factionManager.getFactionByPlayer(player.getUniqueId());
 
-        if (!faction.getLeader().equals(player.getUniqueId())) {
-            sendMessage(player, "<red>Vous n'avez pas le droit de dissoudre cette faction.");
+        if (faction.getLeader().equals(player.getUniqueId())) {
+            sendMessage(player, "<red>⛔ Vous êtes le leader de cette faction. Utilisez /f disband ou promouvez quelqu'un d'autre.");
             return Command.SINGLE_SUCCESS;
         }
 
-        factionManager.deleteFaction(player.getUniqueId());
-        sendMessage(player, "<green>La faction <gold>'" + faction.getName() + "'</gold> a été dissoute.");
+        factionManager.leaveFaction(player.getUniqueId());
+        factionManager.broadcastToFaction(faction, sendMiniMessage("<yellow>⚠ <aqua>" + player.getName() + "</aqua> a quitté votre faction."));
+        sendMessage(player, "<green>✅ Vous avez quitté votre faction.");
+
         return Command.SINGLE_SUCCESS;
     }
 }
-
