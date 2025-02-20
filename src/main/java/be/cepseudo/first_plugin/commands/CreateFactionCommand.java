@@ -35,13 +35,17 @@ public class CreateFactionCommand {
 
         String factionName = context.getArgument("name", String.class);
 
-        if (factionManager.factionExists(factionName)) {
-            sender.sendMessage(Component.text("La faction '" + factionName + "' existe déjà."));
+        // Vérifie s'il y a un problème avec la création de faction
+        String errorMessage = factionManager.canCreateFaction(factionName, player.getUniqueId());
+        if (errorMessage != null) {
+            sender.sendMessage(Component.text(errorMessage));
             return Command.SINGLE_SUCCESS;
         }
 
+        // Création de la faction car tout est valide
         factionManager.createFaction(factionName, player.getUniqueId());
         sender.sendMessage(Component.text("Faction '" + factionName + "' créée avec succès."));
         return Command.SINGLE_SUCCESS;
     }
+
 }
