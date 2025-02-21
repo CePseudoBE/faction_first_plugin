@@ -1,6 +1,7 @@
 package be.cepseudo.first_plugin.commands;
 
 import be.cepseudo.first_plugin.manager.FactionManager;
+import be.cepseudo.first_plugin.utils.CommandUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -24,15 +25,8 @@ public class CreateFactionCommand {
                 .executes(this::showUsage);
     }
 
-    /**
-     * Affiche un message d'erreur si l'argument est manquant.
-     */
     private int showUsage(CommandContext<CommandSourceStack> context) {
-        Player player = getPlayerOrSendError(context);
-        if (player != null) {
-            sendMessage(player, "<red>❌ Utilisation correcte : /f create <nom de faction> (max 15 caractères, sans espaces)");
-        }
-        return Command.SINGLE_SUCCESS;
+        return CommandUtils.showUsage(context, "/f create <name>");
     }
 
     /**

@@ -3,6 +3,7 @@ package be.cepseudo.first_plugin.commands;
 import be.cepseudo.first_plugin.manager.FactionManager;
 import be.cepseudo.first_plugin.manager.PlayerManager;
 import be.cepseudo.first_plugin.entities.Faction;
+import be.cepseudo.first_plugin.utils.CommandUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -27,7 +28,12 @@ public class InvitInFactionCommand {
     public LiteralArgumentBuilder<CommandSourceStack> build() {
         return LiteralArgumentBuilder.<CommandSourceStack>literal("invite")
                 .then(com.mojang.brigadier.builder.RequiredArgumentBuilder.<CommandSourceStack, String>argument("player", StringArgumentType.word())
-                        .executes(this::execute));
+                        .executes(this::execute))
+                .executes(this::showUsage);
+    }
+
+    private int showUsage(CommandContext<CommandSourceStack> context) {
+        return CommandUtils.showUsage(context, "/f invite <player>");
     }
 
     private int execute(CommandContext<CommandSourceStack> context) {

@@ -1,6 +1,7 @@
 package be.cepseudo.first_plugin.commands;
 
 import be.cepseudo.first_plugin.manager.FactionManager;
+import be.cepseudo.first_plugin.utils.CommandUtils;
 import com.mojang.brigadier.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,7 +22,12 @@ public class ShowFactionCommand {
     public LiteralArgumentBuilder<CommandSourceStack> build() {
         return LiteralArgumentBuilder.<CommandSourceStack>literal("show")
                 .then(com.mojang.brigadier.builder.RequiredArgumentBuilder.<CommandSourceStack, String>argument("name", StringArgumentType.word())
-                        .executes(this::execute));
+                        .executes(this::execute))
+                .executes(this::showUsage);
+    }
+
+    private int showUsage(CommandContext<CommandSourceStack> context) {
+        return CommandUtils.showUsage(context, "/f show <faction>");
     }
 
     private int execute(CommandContext<CommandSourceStack> context) {

@@ -1,5 +1,6 @@
 package be.cepseudo.first_plugin.utils;
 
+import com.mojang.brigadier.Command;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
@@ -34,5 +35,14 @@ public class CommandUtils {
      */
     public static void sendMessage(CommandSender sender, String message) {
         sender.sendMessage(miniMessage.deserialize(message));
+    }
+
+    public static int showUsage(CommandContext<CommandSourceStack> context, String usage) {
+        Player player = getPlayerOrSendError(context);
+        if (player != null) {
+            sendMessage(player, "<red>❌ Utilisation correcte : " + usage);
+        }
+
+        return Command.SINGLE_SUCCESS;
     }
 }
