@@ -2,6 +2,7 @@ package be.cepseudo.first_plugin.manager;
 
 import be.cepseudo.first_plugin.entities.Faction;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -116,13 +117,16 @@ public class FactionManager {
         playerFactionMap.remove(playerUUID);
     }
 
-    public void broadcastToFaction(Faction faction, Component message){
+    public void broadcastToFaction(Faction faction, String message) {
         if (faction == null) return;
+
+        // Convertir le message en Component
+        Component formattedMessage = MiniMessage.miniMessage().deserialize(message);
 
         for (UUID memberUUID : faction.getMembers()) {
             Player player = Bukkit.getPlayer(memberUUID); // Vérifie si le membre est en ligne
             if (player != null && player.isOnline()) {
-                player.sendMessage(message); // Envoie le message uniquement aux membres connectés
+                player.sendMessage(formattedMessage); // Envoie le message aux membres connectés
             }
         }
     }
@@ -160,5 +164,19 @@ public class FactionManager {
         return null; // Le joueur n'existe pas dans le serveur
     }
 
+    public boolean isInvited(UUID playerUUID) {
+        String factionName = playerFactionMap.get(playerUUID);
+        if (factionName == null) return false;
+        return factionInvite.containsKey(playerUUID);
+    }
+
+    public void newPlayerInFaction(UUID playerUUID) {
+        String factionName = playerFactionMap.get(playerUUID);
+        if (factionName == null) return;
+        Faction faction = factions.get(factionName);
+        if (faction == null) return;
+        faction.addMember(playerUUID);
+        factionInvite.remove(playerUUID);
+    }
 
 }

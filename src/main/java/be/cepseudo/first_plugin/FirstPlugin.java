@@ -34,6 +34,7 @@ public class FirstPlugin extends JavaPlugin {
                 .then(new DisbandFactionCommand(factionManager).build()) // Ajout de /f disband
                 .then(new LeaveFactionCommand(factionManager).build()) // Ajout de /f leave
                 .then(new InvitInFactionCommand(factionManager, playerManager).build())
+                .then(new JoinFactionCommand(factionManager, playerManager).build())
                 .build();
     }
 }

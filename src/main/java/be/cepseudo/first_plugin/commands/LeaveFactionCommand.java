@@ -12,7 +12,6 @@ import static be.cepseudo.first_plugin.utils.CommandUtils.*;
 
 public class LeaveFactionCommand {
     private final FactionManager factionManager;
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public LeaveFactionCommand(FactionManager factionManager) {
         this.factionManager = factionManager;
@@ -40,7 +39,7 @@ public class LeaveFactionCommand {
         }
 
         factionManager.leaveFaction(player.getUniqueId());
-        factionManager.broadcastToFaction(faction, miniMessage.deserialize("<yellow>⚠ <aqua>" + player.getName() + "</aqua> a quitté votre faction."));
+        factionManager.broadcastToFaction(faction, "<yellow>⚠ <aqua>" + player.getName() + "</aqua> a quitté votre faction.");
         sendMessage(player, "<green>✅ Vous avez quitté votre faction.");
 
         return Command.SINGLE_SUCCESS;

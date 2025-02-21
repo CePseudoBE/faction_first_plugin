@@ -9,7 +9,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import java.util.UUID;
@@ -18,7 +17,6 @@ import static be.cepseudo.first_plugin.utils.CommandUtils.*;
 public class InvitInFactionCommand {
     private final FactionManager factionManager;
     private final PlayerManager playerManager;
-    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public InvitInFactionCommand(FactionManager factionManager, PlayerManager playerManager) {
         this.factionManager = factionManager;
