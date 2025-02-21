@@ -4,7 +4,9 @@ import be.cepseudo.first_plugin.commands.CreateFactionCommand;
 import be.cepseudo.first_plugin.commands.DisbandFactionCommand;
 import be.cepseudo.first_plugin.commands.LeaveFactionCommand;
 import be.cepseudo.first_plugin.commands.ShowFactionCommand;
+import be.cepseudo.first_plugin.listeners.PlayerJoinListener;
 import be.cepseudo.first_plugin.manager.FactionManager;
+import be.cepseudo.first_plugin.manager.PlayerManager;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -13,10 +15,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class FirstPlugin extends JavaPlugin {
     private FactionManager factionManager;
+    private PlayerManager playerManager;
 
     @Override
     public void onEnable() {
-        this.factionManager = new FactionManager();
+        factionManager = new FactionManager();
+        playerManager = new PlayerManager();
+
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerManager), this);
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(buildCommand());
