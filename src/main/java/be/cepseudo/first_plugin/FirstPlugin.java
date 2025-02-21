@@ -1,9 +1,6 @@
 package be.cepseudo.first_plugin;
 
-import be.cepseudo.first_plugin.commands.CreateFactionCommand;
-import be.cepseudo.first_plugin.commands.DisbandFactionCommand;
-import be.cepseudo.first_plugin.commands.LeaveFactionCommand;
-import be.cepseudo.first_plugin.commands.ShowFactionCommand;
+import be.cepseudo.first_plugin.commands.*;
 import be.cepseudo.first_plugin.listeners.PlayerJoinListener;
 import be.cepseudo.first_plugin.manager.FactionManager;
 import be.cepseudo.first_plugin.manager.PlayerManager;
@@ -34,8 +31,9 @@ public class FirstPlugin extends JavaPlugin {
         return LiteralArgumentBuilder.<CommandSourceStack>literal("f")
                 .then(new CreateFactionCommand(factionManager).build()) // Ajout de /f create
                 .then(new ShowFactionCommand(factionManager).build())   // Ajout de /f show
-                .then(new DisbandFactionCommand(factionManager).build())
-                .then(new LeaveFactionCommand(factionManager).build())
+                .then(new DisbandFactionCommand(factionManager).build()) // Ajout de /f disband
+                .then(new LeaveFactionCommand(factionManager).build()) // Ajout de /f leave
+                .then(new InvitInFactionCommand(factionManager, playerManager).build())
                 .build();
     }
 }

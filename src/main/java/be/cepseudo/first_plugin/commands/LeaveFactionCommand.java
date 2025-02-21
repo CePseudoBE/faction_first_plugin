@@ -6,11 +6,13 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import static be.cepseudo.first_plugin.utils.CommandUtils.*;
 
 public class LeaveFactionCommand {
     private final FactionManager factionManager;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public LeaveFactionCommand(FactionManager factionManager) {
         this.factionManager = factionManager;
@@ -38,7 +40,7 @@ public class LeaveFactionCommand {
         }
 
         factionManager.leaveFaction(player.getUniqueId());
-        factionManager.broadcastToFaction(faction, sendMiniMessage("<yellow>⚠ <aqua>" + player.getName() + "</aqua> a quitté votre faction."));
+        factionManager.broadcastToFaction(faction, miniMessage.deserialize("<yellow>⚠ <aqua>" + player.getName() + "</aqua> a quitté votre faction."));
         sendMessage(player, "<green>✅ Vous avez quitté votre faction.");
 
         return Command.SINGLE_SUCCESS;

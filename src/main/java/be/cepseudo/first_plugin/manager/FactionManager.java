@@ -3,6 +3,7 @@ package be.cepseudo.first_plugin.manager;
 import be.cepseudo.first_plugin.entities.Faction;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class FactionManager {
     private final Map<String, Faction> factions = new HashMap<>(); // Stocke les factions par nom
     private final Map<UUID, String> playerFactionMap = new HashMap<>(); // Associe chaque joueur à sa faction
+    private final Map<UUID, Faction> factionInvite = new HashMap<>();
 
     /**
      * Vérifie si une faction existe en fonction de son nom.
@@ -124,4 +126,39 @@ public class FactionManager {
             }
         }
     }
+
+    public void inviteToFaction(UUID leaderUUID, Faction faction, String playerName, PlayerManager playerManager) {
+        if (faction == null) return;
+
+        UUID trueLeaderUUID = getFactionLeader(faction.getName());
+        if (!leaderUUID.equals(trueLeaderUUID)) return; // Vérifie que le joueur est bien le leader
+
+        UUID targetUUID = getUUIDFromPlayerName(playerName);
+        if (targetUUID == null) {
+            Bukkit.getPlayer(leaderUUID).sendMessage(Component.text("❌ Ce joueur n'a jamais rejoint le serveur."));
+            return;
+        }
+
+        if (isPlayerInFaction(targetUUID)) {
+            Bukkit.getPlayer(leaderUUID).sendMessage(Component.text("⚠ Ce joueur est déjà dans une faction."));
+            return;
+        }
+
+        factionInvite.put(targetUUID, faction);
+        Bukkit.getPlayer(targetUUID).sendMessage(Component.text("📩 Vous avez été invité à rejoindre la faction " + faction.getName() + ". Faites /f join " + faction.getName() + " pour accepter."));
+    }
+
+    public UUID getUUIDFromPlayerName(String playerName) {
+        // Vérifie si le joueur est en ligne
+        Player target = Bukkit.getPlayerExact(playerName);
+        if (target != null) return target.getUniqueId();
+
+        // Vérifie si le joueur est hors ligne mais a déjà rejoint
+        OfflinePlayer offlineTarget = Bukkit.getOfflinePlayer(playerName);
+        if (offlineTarget.hasPlayedBefore()) return offlineTarget.getUniqueId();
+
+        return null; // Le joueur n'existe pas dans le serveur
+    }
+
+
 }
