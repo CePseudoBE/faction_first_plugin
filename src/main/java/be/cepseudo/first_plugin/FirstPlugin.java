@@ -1,6 +1,7 @@
 package be.cepseudo.first_plugin;
 
 import be.cepseudo.first_plugin.commands.*;
+import be.cepseudo.first_plugin.listeners.HitPlayerListener;
 import be.cepseudo.first_plugin.listeners.PlayerJoinListener;
 import be.cepseudo.first_plugin.manager.FactionManager;
 import be.cepseudo.first_plugin.manager.PlayerManager;
@@ -20,6 +21,7 @@ public class FirstPlugin extends JavaPlugin {
         playerManager = new PlayerManager();
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerManager), this);
+        getServer().getPluginManager().registerEvents(new HitPlayerListener(factionManager), this);
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(buildCommand());
