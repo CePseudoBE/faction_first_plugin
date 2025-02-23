@@ -3,6 +3,7 @@ package be.cepseudo.first_plugin;
 import be.cepseudo.first_plugin.commands.*;
 import be.cepseudo.first_plugin.listeners.HitPlayerListener;
 import be.cepseudo.first_plugin.listeners.PlayerJoinListener;
+import be.cepseudo.first_plugin.manager.ClaimManager;
 import be.cepseudo.first_plugin.manager.FactionManager;
 import be.cepseudo.first_plugin.manager.PlayerManager;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -14,11 +15,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class FirstPlugin extends JavaPlugin {
     private FactionManager factionManager;
     private PlayerManager playerManager;
+    private ClaimManager claimManager;
 
     @Override
     public void onEnable() {
         factionManager = new FactionManager();
         playerManager = new PlayerManager();
+        claimManager = new ClaimManager();
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerManager), this);
         getServer().getPluginManager().registerEvents(new HitPlayerListener(factionManager), this);
@@ -37,6 +40,7 @@ public class FirstPlugin extends JavaPlugin {
                 .then(new LeaveFactionCommand(factionManager).build()) // Ajout de /f leave
                 .then(new InvitInFactionCommand(factionManager, playerManager).build())
                 .then(new JoinFactionCommand(factionManager, playerManager).build())
+                .then(new ClaimCommand(claimManager, factionManager).build())
                 .build();
     }
 }
