@@ -41,6 +41,7 @@ public class FirstPlugin extends JavaPlugin {
                 .then(new InvitInFactionCommand(factionManager, playerManager).build())
                 .then(new JoinFactionCommand(factionManager, playerManager).build())
                 .then(new ClaimCommand(claimManager, factionManager).build())
+                .then(new UnclaimCommand(claimManager, factionManager).build())
                 .build();
     }
 }

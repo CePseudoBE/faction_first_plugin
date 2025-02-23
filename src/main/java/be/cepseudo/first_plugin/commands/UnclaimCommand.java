@@ -13,17 +13,17 @@ import org.bukkit.entity.Player;
 import static be.cepseudo.first_plugin.utils.CommandUtils.getPlayerOrSendError;
 import static be.cepseudo.first_plugin.utils.CommandUtils.sendMessage;
 
-public class ClaimCommand {
+public class UnclaimCommand {
     private final ClaimManager claimManager;
     private final FactionManager factionManager;
 
-    public ClaimCommand(ClaimManager claimManager, FactionManager factionManager) {
+    public UnclaimCommand(ClaimManager claimManager, FactionManager factionManager) {
         this.claimManager = claimManager;
         this.factionManager = factionManager;
     }
 
     public LiteralArgumentBuilder<CommandSourceStack> build() {
-        return LiteralArgumentBuilder.<CommandSourceStack>literal("claim")
+        return LiteralArgumentBuilder.<CommandSourceStack>literal("unclaim")
                 .executes(this::execute);
     }
 
@@ -38,15 +38,22 @@ public class ClaimCommand {
 
         Chunk chunk = player.getLocation().getChunk();
 
-        if(claimManager.isClaimed(chunk)) {
-            sendMessage(player, "<red>❌ Ce chunk est déjà claim par une autre faction !");
+        if(!claimManager.isClaimed(chunk)) {
+            sendMessage(player, "<red>❌ Ce chunk n'est pas encore claim, utilisez /f claim.");
             return Command.SINGLE_SUCCESS;
         }
 
-        Faction faction = factionManager.getFactionByPlayer(player.getUniqueId());
+        Faction factionPlayer = factionManager.getFactionByPlayer(player.getUniqueId());
 
-        claimManager.claimChunk(chunk, faction);
-        sendMessage(player, "<green>✅ Vous avez claim ce chunk");
+        Faction factionClaim = claimManager.getFactionByChunk(chunk);
+
+        if(factionPlayer != factionClaim) {
+            sendMessage(player, "<red>❌ Ce chunk ne vous appartient pas.");
+            return Command.SINGLE_SUCCESS;
+        }
+
+        claimManager.unclaimChunk(chunk);
+        sendMessage(player, "<green>✅ Vous avez unclaim ce chunk");
 
         return Command.SINGLE_SUCCESS;
     }
