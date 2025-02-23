@@ -6,6 +6,10 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.mojang.brigadier.context.CommandContext;
+import net.kyori.adventure.title.Title;
+import net.kyori.adventure.text.Component;
+
+import java.time.Duration;
 
 public class CommandUtils {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -42,7 +46,23 @@ public class CommandUtils {
         if (player != null) {
             sendMessage(player, "<red>❌ Utilisation correcte : " + usage);
         }
-
         return Command.SINGLE_SUCCESS;
+    }
+
+    /**
+     * Envoie un titre au joueur (message affiché au centre de l'écran).
+     *
+     * @param player    Joueur cible
+     * @param title     Titre principal
+     * @param subtitle  Sous-titre
+     */
+    public static void toPlayerTitle(Player player, String title, String subtitle) {
+        Title toSend = Title.title(
+                MiniMessage.miniMessage().deserialize(title),
+                MiniMessage.miniMessage().deserialize(subtitle),
+                Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(2), Duration.ofMillis(500))
+        );
+
+        player.showTitle(toSend);
     }
 }
