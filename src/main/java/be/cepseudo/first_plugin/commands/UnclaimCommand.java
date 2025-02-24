@@ -10,10 +10,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
-import static be.cepseudo.first_plugin.utils.CommandUtils.getPlayerOrSendError;
-import static be.cepseudo.first_plugin.utils.CommandUtils.sendMessage;
-
-public class UnclaimCommand {
+public class UnclaimCommand extends BaseCommand {
     private final ClaimManager claimManager;
     private final FactionManager factionManager;
 

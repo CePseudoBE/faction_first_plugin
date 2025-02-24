@@ -6,11 +6,9 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
-import static be.cepseudo.first_plugin.utils.CommandUtils.*;
 
-public class LeaveFactionCommand {
+public class LeaveFactionCommand extends BaseCommand {
     private final FactionManager factionManager;
 
     public LeaveFactionCommand(FactionManager factionManager) {

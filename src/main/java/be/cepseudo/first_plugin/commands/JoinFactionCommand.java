@@ -11,10 +11,7 @@ import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 
-import static be.cepseudo.first_plugin.utils.CommandUtils.getPlayerOrSendError;
-import static be.cepseudo.first_plugin.utils.CommandUtils.sendMessage;
-
-public class JoinFactionCommand {
+public class JoinFactionCommand extends BaseCommand {
     private final FactionManager factionManager;
     private final PlayerManager playerManager;
 

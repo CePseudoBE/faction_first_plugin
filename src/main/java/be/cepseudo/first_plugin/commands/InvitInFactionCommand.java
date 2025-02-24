@@ -12,9 +12,8 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import java.util.UUID;
-import static be.cepseudo.first_plugin.utils.CommandUtils.*;
 
-public class InvitInFactionCommand {
+public class InvitInFactionCommand extends BaseCommand {
     private final FactionManager factionManager;
     private final PlayerManager playerManager;
 

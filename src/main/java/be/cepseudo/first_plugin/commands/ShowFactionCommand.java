@@ -10,9 +10,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import java.util.UUID;
-import static be.cepseudo.first_plugin.utils.CommandUtils.*;
 
-public class ShowFactionCommand {
+public class ShowFactionCommand extends BaseCommand {
     private final FactionManager factionManager;
 
     public ShowFactionCommand(FactionManager factionManager) {
