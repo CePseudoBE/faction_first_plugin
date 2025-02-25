@@ -1,7 +1,6 @@
 package be.cepseudo.first_plugin.commands;
 
 import be.cepseudo.first_plugin.manager.FactionManager;
-import be.cepseudo.first_plugin.manager.PlayerManager;
 import be.cepseudo.first_plugin.entities.Faction;
 import be.cepseudo.first_plugin.utils.CommandUtils;
 import com.mojang.brigadier.Command;
@@ -15,11 +14,9 @@ import java.util.UUID;
 
 public class InvitInFactionCommand extends BaseCommand {
     private final FactionManager factionManager;
-    private final PlayerManager playerManager;
 
-    public InvitInFactionCommand(FactionManager factionManager, PlayerManager playerManager) {
+    public InvitInFactionCommand(FactionManager factionManager) {
         this.factionManager = factionManager;
-        this.playerManager = playerManager;
     }
 
     public LiteralArgumentBuilder<CommandSourceStack> build() {

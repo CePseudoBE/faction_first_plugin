@@ -2,7 +2,6 @@ package be.cepseudo.first_plugin.commands;
 
 import be.cepseudo.first_plugin.entities.Faction;
 import be.cepseudo.first_plugin.manager.FactionManager;
-import be.cepseudo.first_plugin.manager.PlayerManager;
 import be.cepseudo.first_plugin.utils.CommandUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -13,11 +12,9 @@ import org.bukkit.entity.Player;
 
 public class JoinFactionCommand extends BaseCommand {
     private final FactionManager factionManager;
-    private final PlayerManager playerManager;
 
-    public JoinFactionCommand(FactionManager factionManager, PlayerManager playerManager) {
+    public JoinFactionCommand(FactionManager factionManager ) {
         this.factionManager = factionManager;
-        this.playerManager = playerManager;
     }
 
     public LiteralArgumentBuilder<CommandSourceStack> build() {
