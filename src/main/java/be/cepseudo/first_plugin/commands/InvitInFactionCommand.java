@@ -66,7 +66,7 @@ public class InvitInFactionCommand extends BaseCommand {
         }
 
         // Ajouter l'invitation
-        factionManager.inviteToFaction(player.getUniqueId(), faction, targetPlayerName, playerManager);
+        factionManager.inviteToFaction(player.getUniqueId(), targetUUID);
 
         // Envoyer un message au joueur invité
         Player targetPlayer = Bukkit.getPlayer(targetUUID);
