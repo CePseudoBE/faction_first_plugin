@@ -2,6 +2,7 @@ package be.cepseudo.first_plugin.commands;
 
 import be.cepseudo.first_plugin.manager.FactionManager;
 import be.cepseudo.first_plugin.entities.Faction;
+import be.cepseudo.first_plugin.enums.FactionRole;
 import be.cepseudo.first_plugin.utils.CommandUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -43,9 +44,10 @@ public class InvitInFactionCommand extends BaseCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        // Vérifier si le joueur est le leader de la faction
-        if (!faction.getLeader().equals(player.getUniqueId())) {
-            sendMessage(player, "<red>⛔ Seul le leader de la faction peut inviter des membres.");
+        // Vérifier si le joueur peut inviter (Leader ou Officer)
+        FactionRole role = faction.getMembers().get(player.getUniqueId());
+        if (role == null || !role.canInvite()) {
+            sendMessage(player, "<red>⛔ Seul un leader ou un officier peut inviter des membres.");
             return Command.SINGLE_SUCCESS;
         }
 
@@ -70,6 +72,8 @@ public class InvitInFactionCommand extends BaseCommand {
         if (targetPlayer != null) {
             sendMessage(targetPlayer, "<green>📩 Vous avez été invité à rejoindre la faction <gold>" + faction.getName() + "</gold> par <aqua>" + player.getName() + "</aqua>.");
             sendMessage(targetPlayer, "<yellow>💡 Tapez /f join " + faction.getName() + " pour accepter.");
+        } else {
+            sendMessage(player, "<yellow>⚠ Le joueur est hors ligne, il pourra voir l'invitation à sa connexion.");
         }
 
         sendMessage(player, "<green>✅ Vous avez invité <aqua>" + targetPlayerName + "</aqua> dans votre faction.");

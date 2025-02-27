@@ -1,6 +1,7 @@
 package be.cepseudo.first_plugin.commands;
 
 import be.cepseudo.first_plugin.entities.Faction;
+import be.cepseudo.first_plugin.enums.FactionRole;
 import be.cepseudo.first_plugin.manager.ClaimManager;
 import be.cepseudo.first_plugin.manager.FactionManager;
 import com.mojang.brigadier.Command;
@@ -28,23 +29,33 @@ public class ClaimCommand extends BaseCommand {
         Player player = getPlayerOrSendError(context);
         if (player == null) return Command.SINGLE_SUCCESS;
 
-        if (!factionManager.isPlayerInFaction(player.getUniqueId())) {
-            sendMessage(player, "<yellow>⚠ Vous n'appartenez à aucune faction.");
+        // Vérification que le joueur est dans une faction
+        Faction faction = factionManager.getFactionByPlayer(player.getUniqueId());
+        if (faction == null) {
+            sendMessage(player, "<yellow>⚠ Vous devez être dans une faction pour claim un chunk.");
+            return Command.SINGLE_SUCCESS;
+        }
+
+        // Vérification du rôle (Leader ou Officer peuvent claim)
+        FactionRole role = faction.getMembers().get(player.getUniqueId());
+        if (role == null || !role.canClaim()) {
+            sendMessage(player, "<red>⛔ Seul un leader ou un officier peut claim des chunks.");
             return Command.SINGLE_SUCCESS;
         }
 
         Chunk chunk = player.getLocation().getChunk();
 
-        if(claimManager.isClaimed(chunk)) {
-            sendMessage(player, "<red>❌ Ce chunk est déjà claim par une autre faction !");
+        // Vérifier si le chunk est déjà claimé
+        if (claimManager.isClaimed(chunk)) {
+            sendMessage(player, "<red>❌ Ce chunk appartient déjà à une faction !");
             return Command.SINGLE_SUCCESS;
         }
 
-        Faction faction = factionManager.getFactionByPlayer(player.getUniqueId());
-
+        // Claim du chunk
         claimManager.claimChunk(chunk, faction);
-        sendMessage(player, "<green>✅ Vous avez claim ce chunk");
+        sendMessage(player, "<green>✅ Vous avez claim ce chunk pour votre faction <gold>" + faction.getName() + "</gold>.");
 
         return Command.SINGLE_SUCCESS;
     }
 }
+

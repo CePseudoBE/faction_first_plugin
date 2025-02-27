@@ -1,6 +1,7 @@
 package be.cepseudo.first_plugin.manager;
 
 import be.cepseudo.first_plugin.entities.Faction;
+import be.cepseudo.first_plugin.enums.FactionRole;
 import be.cepseudo.first_plugin.storage.MemoryFactionStorage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -69,7 +70,9 @@ public class FactionManager {
         Faction faction = getFactionByPlayer(playerUUID);
         if (faction == null) return;
 
-        storage.delete(faction.getName());
+        if (faction.getLeader().equals(playerUUID)) {
+            storage.delete(faction.getName());
+        }
     }
 
     /**
@@ -78,6 +81,11 @@ public class FactionManager {
     public void leaveFaction(UUID playerUUID) {
         Faction faction = getFactionByPlayer(playerUUID);
         if (faction == null) return;
+
+        if (faction.getLeader().equals(playerUUID)) {
+            sendMessage(playerUUID, "<red>⛔ Vous êtes le leader, utilisez /f disband ou promouvez un autre joueur.");
+            return;
+        }
 
         faction.removeMember(playerUUID);
         storage.save(faction);
@@ -103,23 +111,16 @@ public class FactionManager {
      */
     public void inviteToFaction(UUID leaderUUID, UUID targetUUID) {
         Faction faction = getFactionByPlayer(leaderUUID);
-        if (faction == null || !faction.getLeader().equals(leaderUUID)) return;
+        if (faction == null || !faction.getMembers().get(leaderUUID).canInvite()) return;
 
         if (isPlayerInFaction(targetUUID)) {
-            Player leader = Bukkit.getPlayer(leaderUUID);
-            if (leader != null) {
-                leader.sendMessage(Component.text("⚠ Ce joueur est déjà dans une faction."));
-            }
+            sendMessage(leaderUUID, "<yellow>⚠ Ce joueur fait déjà partie d'une faction.");
             return;
         }
 
-        Player targetPlayer = Bukkit.getPlayer(targetUUID);
-        if (targetPlayer != null) {
-            targetPlayer.sendMessage(Component.text("📩 Vous avez été invité à rejoindre la faction "
-                    + faction.getName() + ". Faites /f join " + faction.getName() + " pour accepter."));
-        }
+        sendMessage(targetUUID, "<green>📩 Vous avez été invité à rejoindre la faction <gold>" + faction.getName() + "</gold>.");
+        sendMessage(targetUUID, "<yellow>💡 Tapez /f join " + faction.getName() + " pour accepter.");
     }
-
 
     /**
      * Récupère l'UUID d'un joueur via son pseudo.
@@ -148,5 +149,25 @@ public class FactionManager {
 
         faction.addMember(playerUUID);
         storage.save(faction);
+    }
+
+    /**
+     * Vérifie si un joueur peut revendiquer un chunk.
+     */
+    public boolean canClaim(UUID playerUUID) {
+        Faction faction = getFactionByPlayer(playerUUID);
+        if (faction == null) return false;
+
+        return faction.getMembers().getOrDefault(playerUUID, FactionRole.MEMBER).canClaim();
+    }
+
+    /**
+     * Envoie un message à un joueur spécifique.
+     */
+    private void sendMessage(UUID playerUUID, String message) {
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player != null) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(message));
+        }
     }
 }
