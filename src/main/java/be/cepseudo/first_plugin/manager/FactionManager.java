@@ -90,7 +90,7 @@ public class FactionManager {
         if (faction == null) return;
 
         Component formattedMessage = MiniMessage.miniMessage().deserialize(message);
-        faction.getMembers().forEach(memberUUID -> {
+        faction.getMembers().forEach((memberUUID, role) -> {
             Player player = Bukkit.getPlayer(memberUUID);
             if (player != null && player.isOnline()) {
                 player.sendMessage(formattedMessage);
@@ -106,12 +106,20 @@ public class FactionManager {
         if (faction == null || !faction.getLeader().equals(leaderUUID)) return;
 
         if (isPlayerInFaction(targetUUID)) {
-            Bukkit.getPlayer(leaderUUID).sendMessage(Component.text("⚠ Ce joueur est déjà dans une faction."));
+            Player leader = Bukkit.getPlayer(leaderUUID);
+            if (leader != null) {
+                leader.sendMessage(Component.text("⚠ Ce joueur est déjà dans une faction."));
+            }
             return;
         }
 
-        Bukkit.getPlayer(targetUUID).sendMessage(Component.text("📩 Vous avez été invité à rejoindre la faction " + faction.getName() + ". Faites /f join " + faction.getName() + " pour accepter."));
+        Player targetPlayer = Bukkit.getPlayer(targetUUID);
+        if (targetPlayer != null) {
+            targetPlayer.sendMessage(Component.text("📩 Vous avez été invité à rejoindre la faction "
+                    + faction.getName() + ". Faites /f join " + faction.getName() + " pour accepter."));
+        }
     }
+
 
     /**
      * Récupère l'UUID d'un joueur via son pseudo.
